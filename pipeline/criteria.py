@@ -47,7 +47,7 @@ def BIO_F1_criteria(
     p = precision_score(label_list, pred_list, average=average)
     r = recall_score(label_list, pred_list, average=average)
     f = f1_score(label_list, pred_list, average=average)
-    report = classification_report(label_list, pred_list)
+    report = classification_report(label_list, pred_list, digits=5)
 
     return p, r, f, report
 
