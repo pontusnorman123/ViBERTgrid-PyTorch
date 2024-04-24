@@ -561,13 +561,14 @@ def validate(
     method_recall_sum = int(method_recall_sum.item())
 
     if eval_mode == "seqeval":
+
         assert tag_to_idx is not None
         precision, recall, F1, report = BIO_F1_criteria(
             pred_gt_list=pred_gt_list_, tag_to_idx=tag_to_idx, average=seqeval_average
         )
         print(report)
         print(
-            f"\t precision:[{precision:.4f}]  recall:[{recall:.4f}]  tokenF1: [{F1:.4f}]"
+            f"\t precision:[{precision:.4f}]  recall:[{recall:.4f}]  tokenF1: [{F1:.4f}] val_loss: [{validate_loss:.4f}]"
         )
     elif eval_mode == "strcmp":
         recall = 0 if num_gt == 0 else method_recall_sum / num_gt

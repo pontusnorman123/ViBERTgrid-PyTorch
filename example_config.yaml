@@ -1,7 +1,6 @@
 # brief description of the experiment, will be used in log/runs filename
-comment: " SROIE "
-ocr_url: "haha"
-parse_mode: "123"
+comment: " SROIE " #### example_config.yaml
+
 
 ########################################## distributed training stuff ##################################
 device: 'cuda'
@@ -34,7 +33,7 @@ optimizer_bert_hyp: # AdamW -> BERT
  weight_decay: 0.01
  min_weight_decay: 0.01
 
-loss_weights: 
+loss_weights:
 
 
 ############################################## OHEM trick config #######################################
@@ -53,14 +52,14 @@ ohem_random: True               # apply random sampling before OHEM or not
 
 ######################################### model structure config #######################################
 classifier_mode: "simp"                   # classifier mode, "simp", "full" or "crf"
-eval_mode: "seq_and_str"                  # type of evaluation tool, 
+eval_mode: "seqeval"                  # type of evaluation tool,
                                           # "seqeval" uses seqeval package, calculates token-level result, works for all tag mode
                                           # "strcmp" joins the result and compare the final strings (official SROIE eval method)
                                           # "seq_and_str" uses both of "seqeval" and "strcmp"
 
 tag_mode: "B"                             # tagging mode, "B" for direct prediction, "BIO" for BIO prediction
-#bert_version: "bert-base-uncased"         # [preferred]SROIE & FUNSD
-bert_version: "roberta-base"            # SROIE & FUNSD
+bert_version: "bert-base-uncased"         # [preferred]SROIE & FUNSD
+# bert_version: "roberta-base"            # SROIE & FUNSD
 # bert_version: "bert-base-chinese"       # EPHOIE
 backbone: "resnet_34_fpn_pretrained"      # type of CNN backbone
 grid_mode: "mean"                         # [does not need to change]mode of aggregating token features
@@ -80,12 +79,12 @@ save_log: "./log/"                        # dir to save logs
 
 
 ############################################ load check points #########################################
-weights: 'bs-2_lr1-0.005_lr2-5e-05_bb-resnet_34_fpn_pretrained_bertv-roberta-base_epoch-49_F1-0.8511003969045708_time-2024-04-17_20_09_23.pth'                               # dir to saved weights in the case of loading pretrained
+weights: ''                               # dir to saved weights in the case of loading pretrained
 
 
 ########################################### dataset loading stuff ######################################
 num_workers: 0
-data_root: "dir_to_root"                  # root of the raw dataset
+data_root: "/content/ViBERTgrid-PyTorch/dataset"                  # root of the raw dataset
 
 ## SROIE
 num_classes: 7
@@ -102,6 +101,6 @@ image_min_size:
  - 416
  - 512
  - 608
- - 704 
+ - 704
 image_max_size: 800
 test_image_min_size: 512
