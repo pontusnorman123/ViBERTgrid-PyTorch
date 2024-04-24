@@ -568,7 +568,7 @@ def validate(
         )
         print(report)
         print(
-            f"\t precision:[{precision:.4f}]  recall:[{recall:.4f}]  tokenF1: [{F1:.4f}] val_loss: [{validate_loss:.4f}]"
+            f"\t precision:[{precision:.4f}]  recall:[{recall:.4f}]  tokenF1: [{F1:.4f}] val_loss: [{validate_loss_value:.4f}]"
         )
     elif eval_mode == "strcmp":
         recall = 0 if num_gt == 0 else method_recall_sum / num_gt
