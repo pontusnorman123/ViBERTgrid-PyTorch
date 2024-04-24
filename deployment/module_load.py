@@ -3,7 +3,7 @@ import yaml
 import argparse
 
 import torch
-from transformers import BertTokenizer
+from transformers import BertTokenizer, RobertaTokenizer
 from ltp import LTP
 
 from model.ViBERTgrid_net import ViBERTgridNet
@@ -36,7 +36,8 @@ def inference_init(dir_config: str = "./deployment/config/network_config.yaml"):
 
     print("[LOADING] bert tokenizer")
     start_time = time.time()
-    tokenizer = BertTokenizer.from_pretrained(bert_version)
+    #tokenizer = BertTokenizer.from_pretrained(bert_version)
+    tokenizer = RobertaTokenizer.from_pretrained(bert_version)
     print(f"[LOADED] bert tokenizer, time used {time.time() - start_time}s")
 
     print(f"[LOADING] model {backbone} | {bert_version}")

@@ -7,6 +7,9 @@ import torchvision
 from transformers import BertTokenizer
 from ltp import LTP
 
+import ocr_data
+from ocr_data import *
+
 from typing import Dict, List
 
 
@@ -146,12 +149,18 @@ def generate_batch(
     image = Image.open(io.BytesIO(image_bytes))
     image = image.convert("RGB")
 
-    status_code, return_text_list, return_coor_list = ocr_extraction(
-        image_bytes=image_bytes, ocr_url=ocr_url, parse_mode=parse_mode
-    )
+    # status_code, return_text_list, return_coor_list = ocr_extraction(
+    #     image_bytes=image_bytes, ocr_url=ocr_url, parse_mode=parse_mode
+    # )
 
-    if status_code != 200:
-        return
+    # if status_code != 200:
+    #     return
+
+    return_text_list, return_coor_list = dataSetFormat(image)
+
+    print("return text list: ", return_text_list)
+    print("return coor list: ", return_coor_list)
+
 
     transforms = torchvision.transforms.Compose([torchvision.transforms.ToTensor()])
     image = transforms(image)
@@ -175,6 +184,9 @@ def generate_batch(
         seg_index += 1
 
     ocr_corpus = tokenizer.convert_tokens_to_ids(ocr_tokens)
+    print("ocr corpus: ", ocr_corpus)
+    print("ocr tokens: ", ocr_tokens)
+    print("seg indencies: ", seg_indices)
     ocr_corpus = torch.tensor(ocr_corpus, dtype=torch.long, device=device)
     mask = torch.ones(ocr_corpus.shape, dtype=torch.int, device=device)
 

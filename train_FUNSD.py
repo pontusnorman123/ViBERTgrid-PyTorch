@@ -1,4 +1,4 @@
-import os
+import os ## train_FUNSD-py
 import sys
 import argparse
 import yaml
@@ -25,23 +25,30 @@ from pipeline.distributed_utils import (
     save_on_master,
 )
 
-FUNSD_CLASS_LIST = ["other", "company", "answer", "header"]
+#FUNSD_CLASS_LIST = ["other", "company", "answer", "header"]
+FUNSD_CLASS_LIST = ["others", "COMPANY", "DATE", "ADDRESS", "TOTAL", "TAX", "PRODUCT"]
+
 
 TAG_TO_IDX = {
-    "O": 0,
-    "B-question": 1,
-    "B-answer": 2,
-    "B-header": 3,
+    "O": 6,
+    "B-COMPANY": 0,
+    "B-DATE": 1,
+    "B-ADRESS": 2,
+    "B-TOTAL": 3,
+    "B-TAX": 4,
+    "B-PRODUCT": 5,
 }
 
 TAG_TO_IDX_BIO = {
-    "O": 0,
-    "B-question": 1,
-    "I-question": 2,
-    "B-answer": 3,
-    "I-answer": 4,
-    "B-header": 5,
-    "I-header": 6,
+    "B-COMPANY": 0,
+    "I-COMPANY": 1,
+    "B-DATE": 2,
+    "I-DATE": 3,
+    "B-ADDRESS": 4,
+    "I-ADDRESS": 5,
+    "B-TOTAL":6,
+    "I-TOTAL":7,
+    "others": 0,
 }
 
 
@@ -141,6 +148,8 @@ def train(args):
     elif "roberta-" in bert_version:
         tokenizer = RobertaTokenizer.from_pretrained(bert_version)
     print(f"==> tokenizer {bert_version} loaded")
+
+    args.distributed = False
 
     print(f"==> loading datasets")
     if args.distributed:
@@ -438,3 +447,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     train(args)
+

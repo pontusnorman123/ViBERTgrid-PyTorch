@@ -61,7 +61,7 @@ def token_F1_criteria(pred_gt_list: List[Tuple[torch.Tensor, torch.Tensor]]):
         gt_label.append(item[1])
     pred_label = torch.cat(pred_label, dim=0)
     gt_label = torch.cat(gt_label, dim=0)
-
+    print("TEST ADGFIJSFDGJSFGJSFGISJFGJSFGJIOSFGJISFJGISFJGOI")
     num_classes = pred_label.shape[1]
     pred_label = pred_label.int()
 

@@ -1,4 +1,4 @@
-import os
+import os ##FUNSD_Dataset.py
 import json
 
 from tqdm import tqdm
@@ -15,7 +15,7 @@ from torch.utils.data import distributed, Dataset, DataLoader, BatchSampler
 from transformers import BertTokenizer
 
 
-FUNSD_CLASS_INDEX = {"others": 0, "question": 1, "answer": 2, "header": 3}
+FUNSD_CLASS_INDEX = {"COMPANY": 0, "DATE": 1, "ADDRESS": 2, "TOTAL": 3, "TAX": 4, "PRODUCT": 5, "others":6}
 
 
 class FUNSDDataset(Dataset):
@@ -90,7 +90,7 @@ class FUNSDDataset(Dataset):
             for file in os.listdir(os.path.join(self.subset_root, "_label_csv")):
                 self.filename_list.append(file.replace(".csv", ""))
         else:
-            self.subset_root = os.path.join(root, "training_data")
+            self.subset_root = os.path.join(root, "testing_data")
             for file in os.listdir(os.path.join(self.subset_root, "_label_csv")):
                 self.filename_list.append(file.replace(".csv", ""))
 

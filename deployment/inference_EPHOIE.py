@@ -1,30 +1,21 @@
 import time
 import torch
 import argparse
+import json
+import os
 
 from ltp import LTP
 from transformers import BertTokenizer
 
+import sys
 from deployment.inference_preporcessing import generate_batch
 from model.ViBERTgrid_net import ViBERTgridNet
 
+
 from typing import Tuple
 
+EPHOIE_CLASS_LIST = ["COMPANY", "DATE", "ADDRESS", "TOTAL", "TAX", "PRODUCT", "others"]
 
-EPHOIE_CLASS_LIST = [
-    "其他",
-    "年级",
-    "科目",
-    "学校",
-    "考试时间",
-    "班级",
-    "姓名",
-    "考号",
-    "分数",
-    "座号",
-    "学号",
-    "准考证号",
-]
 
 
 @torch.no_grad()
@@ -34,6 +25,7 @@ def EPHOIE_postprocessing(pred_label: torch.Tensor, num_classes: int, ocr_text: 
     curr_class_score = 0.0
     curr_class_seg_len = 0
     prev_class = -1
+
     for seg_index in range(pred_label.shape[0]):
         curr_pred_logits = pred_label[seg_index].softmax(dim=0)
         curr_pred_class: torch.Tensor = curr_pred_logits.argmax(dim=0)
@@ -61,8 +53,11 @@ def EPHOIE_postprocessing(pred_label: torch.Tensor, num_classes: int, ocr_text: 
         prev_class = curr_pred_class
 
     pred_key_dict = {k: "" for k in EPHOIE_CLASS_LIST[1:]}
+    pred_results = []
+    print("pred all list:", pred_all_list)
     for class_index, class_all_result in enumerate(pred_all_list):
-        if class_index == 0:
+        print("class index: ", class_index, "class_all_result: ", class_all_result)
+        if class_index == 6:
             continue
         curr_class_str = EPHOIE_CLASS_LIST[class_index]
         if class_all_result is None or len(class_all_result) == 0:
@@ -77,8 +72,18 @@ def EPHOIE_postprocessing(pred_label: torch.Tensor, num_classes: int, ocr_text: 
                 max_index = curr_index
 
         pred_key_dict[curr_class_str] = class_all_result[max_index][0]
+        cleaned_class_all_result = [text for text, _ in class_all_result]
 
-    return pred_key_dict
+        pred_results.append((EPHOIE_CLASS_LIST[class_index], cleaned_class_all_result))
+
+    print("pred results: ", pred_results)
+    # cleaned_class_all_result = [text for text, _ in class_all_result]
+    #
+    # # Now, you can append this cleaned list to your pred_results if needed
+    # # Assuming pred_results and EPHOIE_CLASS_LIST are defined somewhere in your code
+    # pred_results.append((EPHOIE_CLASS_LIST[class_index], cleaned_class_all_result))
+
+    return pred_results
 
 
 @torch.no_grad()
@@ -175,5 +180,22 @@ if __name__ == "__main__":
         parse_mode=PARSE_MODE,
     )
 
-    with open(image_dir.replace(".jpg", ".json"), "w") as f:
-        json.dump(result, f, ensure_ascii=False)
+    # Extract the base name of the file without the extension
+    base_name = os.path.basename(image_dir).replace(".png", ".txt")
+
+    # Construct the new path in the desired directory
+    new_file_path = os.path.join('/mnt/c/School/ViBERTgrid-PyTorch/results', base_name)
+
+
+    # Save the result dictionary to the new JSON file
+    # with open(new_file_path, "w") as f:
+    #     json.dump(result, f, ensure_ascii=False)
+    #
+    # print(f"JSON file saved at: {new_file_path}")
+
+    # Save the list of strings to the new text file
+    with open(new_file_path, "w") as f:
+        for item in result:
+            f.write(f"{item}\n")  # Each item on a new line
+
+    print(f"Text file saved at: {new_file_path}")
